@@ -1,7 +1,19 @@
 <?php
 include('db_connect.php'); 
 
-$query = "SELECT id, numer_oferty, data, nazwa_produktu, kod_produktu FROM oferty";
+// Sprawdzamy, czy użytkownik wprowadził zapytanie wyszukiwania
+$searchQuery = ''; // Domyślnie puste zapytanie, jeśli nic nie wpisano
+if (isset($_GET['search'])) {
+    $searchQuery = $_GET['search'];
+}
+
+// Zaktualizowane zapytanie SQL z filtrowaniem po numerze oferty, nazwie produktu lub kodzie
+$query = "SELECT id, numer_oferty, data, nazwa_produktu, kod_produktu 
+          FROM oferty 
+          WHERE numer_oferty LIKE '%$searchQuery%' 
+          OR nazwa_produktu LIKE '%$searchQuery%' 
+          OR kod_produktu LIKE '%$searchQuery%'";
+
 $result = $conn->query($query);
 ?>
 <!DOCTYPE html>
@@ -23,12 +35,29 @@ $result = $conn->query($query);
         th {
             background-color: #f4f4f4;
         }
+        input[type="text"] {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h1>Lista ofert</h1>
+    
+    <!-- Formularz wyszukiwania -->
+    <form method="get" action="">
+        <input type="text" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Wyszukaj ofertę..." />
+        <button type="submit">Szukaj</button>
+    </form>
+    
+    <br><br>
     <a href="dodaj_oferte.php">Dodaj nową ofertę</a>
     <br><br>
+    
     <table>
         <thead>
             <tr>
@@ -56,7 +85,7 @@ $result = $conn->query($query);
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="5">Brak ofert w bazie danych.</td>
+                    <td colspan="5">Brak ofert spełniających kryteria wyszukiwania.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
