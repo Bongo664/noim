@@ -1,9 +1,9 @@
 <?php
-include('db_connect.php'); 
+include('db_connect.php');
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    
+
     $query = "SELECT * FROM oferty WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $id);
@@ -26,13 +26,77 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Szczegóły oferty</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9f9f9;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        td {
+            background-color: #fff;
+            font-size: 1em;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover td {
+            background-color: #ddd;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px auto;
+            background-color: #f2f2f2;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #f3f5f6;
+        }
+    </style>
 </head>
 <body>
-    <h1>Szczegóły oferty</h1>
-    <a href="lista_ofert.php">Powrót do listy ofert</a>
-    <br><br>
-
-    <table border="1" cellpadding="10">
+    <h1>Szczegóły oferty - <?php echo htmlspecialchars($oferta['numer_oferty']); ?></h1>
+    
+    <table>
         <tr>
             <th>Numer oferty</th>
             <td><?php echo htmlspecialchars($oferta['numer_oferty']); ?></td>
@@ -58,6 +122,10 @@ if (isset($_GET['id'])) {
             <td><?php echo $oferta['opcja_z_znakowaniem'] ? 'Tak' : 'Nie'; ?></td>
         </tr>
         <tr>
+            <th>Kolory bez znakowania</th>
+            <td><?php echo htmlspecialchars($oferta['kolory_bez_znakowania']); ?></td>
+        </tr>
+        <tr>
             <th>Technologia znakowania</th>
             <td><?php echo htmlspecialchars($oferta['technologia_znakowania']); ?></td>
         </tr>
@@ -66,8 +134,8 @@ if (isset($_GET['id'])) {
             <td><?php echo htmlspecialchars($oferta['liczba_kolorow']); ?></td>
         </tr>
         <tr>
-            <th>Kolory</th>
-            <td><?php echo htmlspecialchars($oferta['kolory']); ?></td>
+            <th>Kolory znakowania</th>
+            <td><?php echo htmlspecialchars($oferta['kolory_znakowania']); ?></td>
         </tr>
         <tr>
             <th>Ilość</th>
@@ -75,42 +143,40 @@ if (isset($_GET['id'])) {
         </tr>
         <tr>
             <th>Cena produktu</th>
-            <td><?php echo htmlspecialchars($oferta['cena_produktu']); ?> zł</td>
+            <td><?php echo htmlspecialchars($oferta['cena_produktu']); ?> PLN</td>
         </tr>
         <tr>
-            <th>Cena przygotowania</th>
-            <td><?php echo htmlspecialchars($oferta['cena_przygotowana']); ?> zł</td>
+            <th>Cena przygotowana</th>
+            <td><?php echo htmlspecialchars($oferta['cena_przygotowana']); ?> PLN</td>
         </tr>
         <tr>
             <th>Cena nadruku</th>
-            <td><?php echo htmlspecialchars($oferta['cena_nadruku']); ?> zł</td>
+            <td><?php echo htmlspecialchars($oferta['cena_nadruku']); ?> PLN</td>
         </tr>
         <tr>
             <th>Cena jednostkowa</th>
-            <td><?php echo htmlspecialchars($oferta['cena_jednostkowa']); ?> zł</td>
+            <td><?php echo htmlspecialchars($oferta['cena_jednostkowa']); ?> PLN</td>
         </tr>
         <tr>
             <th>Cena przed marżą</th>
-            <td><?php echo htmlspecialchars($oferta['cena_przed_marza']); ?> zł</td>
+            <td><?php echo htmlspecialchars($oferta['cena_przed_marza']); ?> PLN</td>
         </tr>
         <tr>
             <th>Cena po marży</th>
-            <td><?php echo htmlspecialchars($oferta['cena_po_marzy']); ?> zł</td>
+            <td><?php echo htmlspecialchars($oferta['cena_po_marzy']); ?> PLN</td>
         </tr>
-        <tr>
-            <th>Grafika produktu</th>
-            <td>
-                <?php if (!empty($oferta['grafika_produktu'])): ?>
-                    <img src="<?php echo htmlspecialchars($oferta['grafika_produktu']); ?>" alt="Grafika produktu" style="max-width: 300px;">
-                <?php else: ?>
-                    Brak grafiki
-                <?php endif; ?>
-            </td>
-        </tr>
+        <?php if ($oferta['grafika_produktu']) { ?>
+            <tr>
+                <th>Grafika produktu</th>
+                <td>
+                    <img src="data:image/png;base64,<?php echo base64_encode($oferta['grafika_produktu']); ?>" alt="Grafika produktu">
+                </td>
+            </tr>
+        <?php } ?>
     </table>
+
+    <!-- Przycisk powrotu -->
+    <a href="javascript:history.back()" class="btn">Powrót</a>
+
 </body>
 </html>
-
-<?php
-$conn->close();
-?>

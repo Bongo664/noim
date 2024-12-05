@@ -34,7 +34,6 @@
         <p>Wybierz, co chcesz zrobić:</p>
         <a href="dodaj_oferte.php">Dodaj nową ofertę</a>
         <a href="lista_ofert.php">Przeglądaj listę ofert</a>
-        <a href="szczegoly_oferty.php?id=1">Wyświetl przykładową ofertę</a>
     </div>
 </body>
 </html>

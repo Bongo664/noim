@@ -23,25 +23,122 @@ $result = $conn->query($query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista ofert</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         table {
             width: 100%;
+            margin-top: 20px;
             border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
             text-align: left;
+            border: 1px solid #ddd;
         }
+
         th {
             background-color: #f4f4f4;
+            color: #333;
+            font-size: 16px;
         }
-        input[type="text"] {
-            padding: 5px;
+
+        td {
+            font-size: 14px;
+            color: #555;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .action-links {
+            font-size: 14px;
+        }
+
+        .action-links a {
             margin-right: 10px;
+            color: #2196F3;
         }
-        button {
-            padding: 5px 10px;
-            cursor: pointer;
+
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 16px;
+            color: #999;
+        }
+
+        .btn-add {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #2196F3;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .btn-add:hover {
+            background-color: #1976D2;
         }
     </style>
 </head>
@@ -55,9 +152,11 @@ $result = $conn->query($query);
     </form>
     
     <br><br>
-    <a href="dodaj_oferte.php">Dodaj nową ofertę</a>
+    <!-- Link do dodania nowej oferty -->
+    <a href="dodaj_oferte.php" class="btn-add">Dodaj nową ofertę</a>
     <br><br>
     
+    <!-- Tabela wyników wyszukiwania -->
     <table>
         <thead>
             <tr>
@@ -76,7 +175,7 @@ $result = $conn->query($query);
                         <td><?php echo htmlspecialchars($row['data']); ?></td>
                         <td><?php echo htmlspecialchars($row['nazwa_produktu']); ?></td>
                         <td><?php echo htmlspecialchars($row['kod_produktu']); ?></td>
-                        <td>
+                        <td class="action-links">
                             <a href="szczegoly_oferty.php?id=<?php echo $row['id']; ?>">Szczegóły</a> |
                             <a href="generuj_pdf.php?id=<?php echo $row['id']; ?>">Generuj PDF</a> |
                             <a href="usun_oferta.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Czy na pewno chcesz usunąć tę ofertę?')">Usuń</a>
@@ -85,7 +184,7 @@ $result = $conn->query($query);
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="5">Brak ofert spełniających kryteria wyszukiwania.</td>
+                    <td colspan="5" class="no-results">Brak ofert spełniających kryteria wyszukiwania.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
