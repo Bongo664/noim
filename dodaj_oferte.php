@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Bindowanie parametrów
     $stmt->bind_param(
-        'isssississsdddddss',
+        'isssisssisssddddds',
         $numer_oferty, $data, $nazwa_produktu, $kod_produktu, 
         $opcja_bez_znakowania, $kolory_bez_znakowania, 
         $opcja_z_znakowaniem, $technologia_znakowania, $liczba_kolorow, 
@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin: 0 auto;
-            width:32.2061 %;
+            width:600px;
         }
 
         label {
@@ -154,7 +154,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #45a049;
         }
 
-        /* Style the checkbox */
         input[type="checkbox"] {
             display: none;
         }
@@ -209,6 +208,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #e0e0e0;
             border-color: #888;
         }
+        input[type="submit"]{
+            margin-top: 20px;
+        }
+        .check{
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        input[type="submit"], 
+        .back-link {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        input[type="submit"]:hover, 
+        .back-link:hover {
+            background-color: #45a049;
+        }
+
+        .back-link-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
 
         /* Responsive styles */
         @media (max-width: 768px) {
@@ -244,6 +277,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 bezZnakowaniaFields.style.display = 'none';
                 zZnakowaniemFields.style.display = 'block';
             }
+            else {
+                bezZnakowaniaFields.style.display = 'none';
+                zZnakowaniemFields.style.display = 'none';
+            }
         }
     </script>
 </head>
@@ -255,6 +292,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label for="data">Data</label>
         <input type="date" id="data" name="data" required>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const today = new Date().toISOString().split('T')[0];  // Ustawia datę w formacie YYYY-MM-DD
+                document.getElementById('data').value = today;  // Wstawia dzisiejszą datę do pola
+            });
+        </script>
+        
 
         <label for="nazwa_produktu">Nazwa produktu</label>
         <input type="text" id="nazwa_produktu" name="nazwa_produktu" required>
@@ -262,7 +306,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="kod_produktu">Kod produktu</label>
         <input type="text" id="kod_produktu" name="kod_produktu" required>
 
-        <div>
+        <div class="check">
             <input type="checkbox" id="bez_znakowania" name="bez_znakowania" onchange="toggleFields('bez_znakowania')">
             <label for="bez_znakowania">Opcja bez znakowania</label>
 
@@ -310,5 +354,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <input type="submit" value="Zapisz ofertę">
     </form>
+    <div class="back-link-container">
+        <a href="index.php" class="back-link">Powrót do strony głównej</a>
+    </div>
 </body>
 </html>

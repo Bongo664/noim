@@ -1,6 +1,12 @@
 <?php
 include('db_connect.php');
 
+// Funkcja do zmiany formatu daty na dd-mm-yyyy
+function formatDate($date) {
+    $dateObj = DateTime::createFromFormat('Y-m-d', $date); // Zakładając, że data jest w formacie Y-m-d
+    return $dateObj ? $dateObj->format('d-m-Y') : $date;
+}
+
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
@@ -81,10 +87,10 @@ if (isset($_GET['id'])) {
             display: inline-block;
             padding: 10px 20px;
             margin: 20px auto;
-            background-color: #f2f2f2;
+            background-color: #4CAF50;
             color: white;
             text-align: center;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
         }
 
@@ -94,6 +100,7 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
+<a href="javascript:history.back()" class="btn">Powrót</a>
     <h1>Szczegóły oferty - <?php echo htmlspecialchars($oferta['numer_oferty']); ?></h1>
     
     <table>
@@ -103,7 +110,7 @@ if (isset($_GET['id'])) {
         </tr>
         <tr>
             <th>Data</th>
-            <td><?php echo htmlspecialchars($oferta['data']); ?></td>
+            <td><?php echo htmlspecialchars(formatDate($oferta['data'])); ?></td>
         </tr>
         <tr>
             <th>Nazwa produktu</th>
@@ -174,9 +181,5 @@ if (isset($_GET['id'])) {
             </tr>
         <?php } ?>
     </table>
-
-    <!-- Przycisk powrotu -->
-    <a href="javascript:history.back()" class="btn">Powrót</a>
-
 </body>
 </html>
