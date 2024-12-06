@@ -194,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             content: '✔';
             position: absolute;
             left: 5px;
-            top: 0;
+            top: 3px;
             font-size: 16px;
             color: white;
         }
@@ -298,7 +298,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 document.getElementById('data').value = today;  // Wstawia dzisiejszą datę do pola
             });
         </script>
-        
+
 
         <label for="nazwa_produktu">Nazwa produktu</label>
         <input type="text" id="nazwa_produktu" name="nazwa_produktu" required>
