@@ -184,7 +184,7 @@ $result = $conn->query($query);
     </style>
 </head>
 <body>
-<a href="index.php" class="btn-back" style="text-decoration:none;">Powrót do strony głównej</a>
+<a href="index" class="btn-back" style="text-decoration:none;">Powrót do strony głównej</a>
     <h1>Lista ofert</h1>
     
     <!-- Formularz wyszukiwania -->
@@ -217,7 +217,7 @@ $result = $conn->query($query);
                         <td><?php echo htmlspecialchars($row['nazwa_produktu']); ?></td>
                         <td><?php echo htmlspecialchars($row['kod_produktu']); ?></td>
                         <td class="action-links">
-                            <a href="szczegoly_oferty.php?id=<?php echo $row['id']; ?>">Szczegóły</a> |
+                            <a href="szczegoly_oferty?id=<?php echo $row['id']; ?>">Szczegóły</a> |
                             <a href="generuj_pdf.php?id=<?php echo $row['id']; ?>"style="margin-left:20px">Generuj PDF</a> |
                             <a href="usun_oferta.php?id=<?php echo $row['id']; ?>" style="margin-left:20px" onclick="return confirm('Czy na pewno chcesz usunąć tę ofertę?')">Usuń</a>
                         </td>

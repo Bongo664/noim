@@ -355,7 +355,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="submit" value="Zapisz ofertę">
     </form>
     <div class="back-link-container">
-        <a href="index.php" class="back-link">Powrót do strony głównej</a>
+        <a href="index" class="back-link">Powrót do strony głównej</a>
     </div>
 </body>
 </html>

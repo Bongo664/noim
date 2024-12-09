@@ -32,8 +32,8 @@
     <div class="container">
         <h1>Witaj w systemie zarządzania ofertami</h1>
         <p>Wybierz, co chcesz zrobić:</p>
-        <a href="dodaj_oferte.php">Dodaj nową ofertę</a>
-        <a href="lista_ofert.php">Przeglądaj listę ofert</a>
+        <a href="dodaj_oferte">Dodaj nową ofertę</a>
+        <a href="lista_ofert">Przeglądaj listę ofert</a>
     </div>
 </body>
 </html>
