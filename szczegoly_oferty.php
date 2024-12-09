@@ -95,7 +95,7 @@ if (isset($_GET['id'])) {
         }
 
         .btn:hover {
-            background-color: #f3f5f6;
+            background-color: #4CAF20;
         }
     </style>
 </head>

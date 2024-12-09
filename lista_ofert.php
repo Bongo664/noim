@@ -184,7 +184,7 @@ $result = $conn->query($query);
     </style>
 </head>
 <body>
-<a href="index.php" class="btn-back">Powrót do strony głównej</a>
+<a href="index.php" class="btn-back" style="text-decoration:none;">Powrót do strony głównej</a>
     <h1>Lista ofert</h1>
     
     <!-- Formularz wyszukiwania -->
@@ -195,7 +195,7 @@ $result = $conn->query($query);
     </form>
     
     <!-- Link do dodania nowej oferty -->
-    <a href="dodaj_oferte.php" class="btn-add">Dodaj nową ofertę</a>
+    <a href="dodaj_oferte.php" class="btn-add" style="text-decoration:none;">Dodaj nową ofertę</a>
     
     <!-- Tabela wyników wyszukiwania -->
     <table>
