@@ -267,8 +267,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             input[type="text"],
             input[type="date"],
             input[type="number"] {
-                width: 100%;
+                width: 95.3%;
                 max-width: 100%;
+            }
+        }
+        @media (max-width:680px){
+            form{
+                width:90vw;
+                padding-left:10px
+            }
+            body{
+                padding:0;
+            }
+            input[type="file"]{
+                width:86vw;
+            }
+            input[type="submit"]{
+                width:92.5vw;
+            }
+            .back-link{
+                margin-bottom:30px;
             }
         }
     </style>
