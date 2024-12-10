@@ -1,40 +1,49 @@
 <?php
+// Połączenie z bazą danych
 include('db_connect.php');
 
+// Sprawdzenie, czy metoda żądania to POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Pobierz dane z formularza
     $numer_oferty = $_POST['numer_oferty'];
     $data = $_POST['data'];
     $nazwa_produktu = $_POST['nazwa_produktu'];
     $kod_produktu = $_POST['kod_produktu'];
-    $opcja_bez_znakowania = isset($_POST['bez_znakowania']) ? 1 : 0;
-    $opcja_z_znakowaniem = isset($_POST['z_znakowaniem']) ? 1 : 0;
+
+    // Obsługa pól wyboru
+    $opcja_bez_znakowania = isset($_POST['bez_znakowania']) ? 1 : 0; // Sprawdza, czy opcja "bez znakowania" została wybrana
+    $opcja_z_znakowaniem = isset($_POST['z_znakowaniem']) ? 1 : 0;   // Sprawdza, czy opcja "z znakowaniem" została wybrana
+
+    // Wartości opcjonalne w zależności od zaznaczonych pól
     $kolory_bez_znakowania = $opcja_bez_znakowania ? ($_POST['kolory_bez_znakowania'] ?? '') : '';
     $technologia_znakowania = $opcja_z_znakowaniem ? ($_POST['technologia_znakowania'] ?? '') : '';
     $liczba_kolorow = $opcja_z_znakowaniem ? ($_POST['liczba_kolorow'] ?? 0) : 0;
     $kolory_znakowania = $opcja_z_znakowaniem ? ($_POST['kolory_znakowania'] ?? '') : '';
+
+    // Dane liczbowe
     $ilosc = $_POST['ilosc'];
     $cena_produktu = $_POST['cena_produktu'];
     $cena_przygotowana = $_POST['cena_przygotowana'];
     $cena_nadruku = $_POST['cena_nadruku'];
     $cena_jednostkowa = $_POST['cena_jednostkowa'];
     $cena_przed_marza = $_POST['cena_przed_marza'];
-    $procent_marzy = $_POST['procent_marzy'] / 100;
-    $cena_po_marzy = $cena_przed_marza * (1 + $procent_marzy);
+    $procent_marzy = $_POST['procent_marzy'] / 100; // Przeliczenie procentu marży na ułamek
+    $cena_po_marzy = $cena_przed_marza * (1 + $procent_marzy); // Obliczenie ceny po marży
 
     // Obsługa przesyłania pliku
     $grafika_produktu = null;
     if (isset($_FILES['grafika_produktu']) && $_FILES['grafika_produktu']['error'] === UPLOAD_ERR_OK) {
+        // Dozwolone typy plików
         $allowedTypes = ['image/png'];  // Akceptujemy tylko pliki PNG
         $fileType = $_FILES['grafika_produktu']['type'];
 
         // Sprawdzamy, czy typ pliku jest dozwolony
         if (!in_array($fileType, $allowedTypes)) {
             echo "Błąd: Tylko obrazy PNG są dozwolone.";
-            exit;
+            exit; // Zatrzymanie dalszego przetwarzania w przypadku błędu
         }
 
-        // Jeśli typ jest poprawny, wczytujemy zawartość pliku
+        // Pobranie zawartości pliku
         $grafika_produktu = file_get_contents($_FILES['grafika_produktu']['tmp_name']);
     }
 
@@ -45,11 +54,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         cena_produktu, cena_przygotowana, cena_nadruku, cena_jednostkowa, cena_przed_marza, cena_po_marzy, grafika_produktu)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+    // Sprawdzenie, czy zapytanie SQL zostało poprawnie przygotowane
     if ($stmt === false) {
         die("Błąd przygotowania zapytania: " . $conn->error);
     }
 
-    // Bindowanie parametrów
+    // Powiązanie zmiennych z zapytaniem SQL
     $stmt->bind_param(
         'isssisssisssddddds',
         $numer_oferty, $data, $nazwa_produktu, $kod_produktu, 
@@ -61,14 +71,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Wykonanie zapytania
     if ($stmt->execute()) {
-        echo "Oferta została zapisana.";
+        echo "Oferta została zapisana."; // Powodzenie
     } else {
-        echo "Błąd podczas zapisywania oferty: " . $stmt->error;
+        echo "Błąd podczas zapisywania oferty: " . $stmt->error; // Wystąpił błąd
     }
 
+    // Zamknięcie zapytania
     $stmt->close();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>

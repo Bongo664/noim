@@ -2,7 +2,9 @@
 include_once('db_connect.php');
 require('fpdf186/fpdf.php');
 
+// Klasa PDF rozszerzająca FPDF
 class PDF extends FPDF {
+    // Nagłówek dokumentu
     function Header() {
         $this->SetFont('Arial', 'B', 12);
         $this->Cell(0, 10, 'Oferta', 0, 1, 'C');
@@ -10,28 +12,33 @@ class PDF extends FPDF {
     }
 }
 
+// Tworzenie obiektu PDF
 $pdf = new PDF();
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 12);
 
+// Pobranie ID oferty z parametru GET
 $id = $_GET['id'];
+
+// Pobranie danych oferty z bazy danych na podstawie ID
 $result = $conn->query("SELECT * FROM oferty WHERE id = $id");
 $oferta = $result->fetch_assoc();
 
-// Extract values for 'znakowanie' and 'opcja_bez_znakowania'
+// Pobranie wartości dla pól 'znakowanie' i 'opcja_bez_znakowania'
 $znakowanie = $oferta['znakowanie'] ?? 0;
 $opcja_bez_znakowania = $oferta['opcja_bez_znakowania'] ?? 0;
 
-// List of fields to be skipped
+// Lista pól, które mają zostać pominięte
 $pola_pominiete = ['id', 'cena_przed_marza', 'opcja_z_znakowaniem', 'opcja_bez_znakowania', 'znakowanie','kolory','grafika_produktu'];
 
+// Iteracja przez wszystkie pola oferty
 foreach ($oferta as $key => $value) {
-    // Skip fields listed in $pola_pominiete
+    // Pomijanie pól określonych w $pola_pominiete
     if (in_array($key, $pola_pominiete)) {
         continue;
     }
 
-    // Handle 'kolory_bez_znakowania' field
+    // Obsługa pola 'kolory_bez_znakowania'
     if ($key === 'kolory_bez_znakowania') {
         if ($opcja_bez_znakowania == 1) {
             $pdf->Cell(0, 10, ucfirst(str_replace('_', ' ', $key)) . ': ' . $value, 0, 1);
@@ -39,58 +46,58 @@ foreach ($oferta as $key => $value) {
         continue;
     }
 
-    // Display data based on 'znakowanie' value
+    // Wyświetlanie danych w zależności od wartości pola 'znakowanie'
     if ($znakowanie == 1) {
-        // Display only fields related to znakowaniem
+        // Wyświetlanie tylko pól związanych ze znakowaniem
         if (in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
             $pdf->Cell(0, 10, ucfirst(str_replace('_', ' ', $key)) . ': ' . $value, 0, 1);
         }
     } else {
-        // If 'znakowanie' == 0, skip fields related to znakowaniem
+        // Jeśli 'znakowanie' == 0, pomijanie pól związanych ze znakowaniem
         if (!in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
             $pdf->Cell(0, 10, ucfirst(str_replace('_', ' ', $key)) . ': ' . $value, 0, 1);
         }
     }
 }
 
-// Retrieve the image binary data from the database
-$imageBlob = $oferta['grafika_produktu']; // Assuming the image is stored as binary blob in the database
+// Pobranie danych binarnych obrazu z bazy danych
+$imageBlob = $oferta['grafika_produktu']; // Zakładamy, że obraz jest przechowywany jako blob w bazie danych
 
 if (!empty($imageBlob)) {
-    // Create an image from the binary blob data
+    // Tworzenie obrazu z danych binarnych
     $imageResource = imagecreatefromstring($imageBlob);
     
     if ($imageResource !== false) {
-        // Define a path for the temporary image
-        $tempImagePath = 'temp/temp_image.jpg'; // Save to the 'temp' directory in your project
+        // Ścieżka do tymczasowego pliku obrazu
+        $tempImagePath = 'temp/temp_image.jpg'; // Zapisywanie w katalogu 'temp'
 
-        // Create the 'temp' folder if it doesn't exist
+        // Tworzenie katalogu 'temp', jeśli nie istnieje
         if (!file_exists('temp')) {
-            mkdir('temp', 0777, true); // Create the 'temp' folder with proper permissions
+            mkdir('temp', 0777, true); // Tworzenie katalogu z odpowiednimi uprawnieniami
         }
 
-        // Save the image as JPEG in the temporary folder
-        imagejpeg($imageResource, $tempImagePath); // Save as JPEG (or use imagepng() for PNG)
-        imagedestroy($imageResource); // Free memory
+        // Zapisywanie obrazu jako JPEG w katalogu tymczasowym
+        imagejpeg($imageResource, $tempImagePath); // Można użyć imagepng() dla PNG
+        imagedestroy($imageResource); // Zwolnienie pamięci
         
-        // Now you can use the image in the PDF
+        // Dodanie obrazu do PDF, jeśli plik został utworzony
         if (file_exists($tempImagePath)) {
-            $pdf->Image($tempImagePath, 10, $pdf->GetY(), 50); // Adjust the size and position as needed
-            $pdf->Ln(60); // Add space after the image
+            $pdf->Image($tempImagePath, 10, $pdf->GetY(), 50); // Dopasowanie rozmiaru i pozycji obrazu
+            $pdf->Ln(60); // Dodanie odstępu po obrazie
         } else {
-            error_log("Temporary image file could not be created.");
+            error_log("Nie udało się utworzyć pliku tymczasowego obrazu.");
         }
     } else {
-        error_log("Failed to create image from blob.");
+        error_log("Nie udało się utworzyć obrazu z danych binarnych.");
     }
 }
 
-// Retrieve offer number from the database
+// Pobranie numeru oferty z bazy danych
 $numer_oferty = $oferta['numer_oferty'];
 
-// Generate PDF file name
+// Generowanie nazwy pliku PDF
 $filename = 'oferta_' . $numer_oferty . '.pdf';
 
-// Save PDF to a file with a dynamic name
+// Zapis PDF do pliku z dynamiczną nazwą
 $pdf->Output('D', $filename);
 ?>
