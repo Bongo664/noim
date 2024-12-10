@@ -109,7 +109,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin: 0 auto;
             width:600px;
         }
-
         label {
             font-size: 14px;
             font-weight: 500;
