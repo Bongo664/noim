@@ -1,21 +1,59 @@
 <?php
+// Start output buffering
+ob_start();
 include_once('db_connect.php');
 require('fpdf186/fpdf.php');
 
 // Klasa PDF rozszerzająca FPDF
 class PDF extends FPDF {
+    function __construct() {
+        parent::__construct();
+        $this->SetAutoPageBreak(true, 15);
+
+        // Załaduj czcionki (upewnij się, że pliki czcionek znajdują się w folderze 'fpdf186/font/')
+        $this->AddFont('DejaVuSans', '', 'DejaVuSans.php');
+        $this->AddFont('DejaVuSans', 'B', 'DejaVuSans-Bold.php');
+
+        $this->AddPage();
+        $this->AliasNbPages();
+    }
+
     // Nagłówek dokumentu
     function Header() {
-        $this->SetFont('Arial', 'B', 12);
-        $this->Cell(0, 10, 'Oferta', 0, 1, 'C');
+        $this->SetFont('DejaVuSans', 'B', 16);
+        $this->SetTextColor(33, 150, 243);
+        $this->Cell(0, 10, $this->utf8_decode('Oferta'), 0, 1, 'C');
         $this->Ln(10);
+    }
+
+    // Metoda do obsługi tekstu UTF-8
+    function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
+    {
+        $txt = $this->utf8_decode($txt);
+        parent::Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
+    }
+
+    function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
+    {
+        $txt = $this->utf8_decode($txt);
+        parent::MultiCell($w, $h, $txt, $border, $align, $fill);
+    }
+
+    // Metoda do dekodowania UTF-8
+    function utf8_decode($txt) {
+        $result = @iconv('UTF-8', 'windows-1252//TRANSLIT//IGNORE', $txt);
+        return ($result === false) ? $txt : $result;
     }
 }
 
+// Reszta kodu pozostaje bez zmian...
+
 // Tworzenie obiektu PDF
 $pdf = new PDF();
-$pdf->AddPage();
-$pdf->SetFont('Arial', '', 12);
+
+// Set default font to regular DejaVuSans
+$pdf->SetFont('DejaVuSans', '', 12);
+$pdf->SetTextColor(0); // Domyślny kolor tekstu (czarny)
 
 // Pobranie ID oferty z parametru GET
 $id = $_GET['id'];
@@ -38,57 +76,51 @@ foreach ($oferta as $key => $value) {
         continue;
     }
 
-    // Obsługa pola 'kolory_bez_znakowania'
-    if ($key === 'kolory_bez_znakowania') {
-        if ($opcja_bez_znakowania == 1) {
-            $pdf->Cell(0, 10, ucfirst(str_replace('_', ' ', $key)) . ': ' . $value, 0, 1);
-        }
+    // Jeśli wybrano "ze znakowaniem", pomijaj pole "kolory bez znakowania"
+    if ($znakowanie == 1 && $key === 'kolory_bez_znakowania') {
         continue;
     }
 
-    // Wyświetlanie danych w zależności od wartości pola 'znakowanie'
-    if ($znakowanie == 1) {
-        // Wyświetlanie tylko pól związanych ze znakowaniem
-        if (in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
-            $pdf->Cell(0, 10, ucfirst(str_replace('_', ' ', $key)) . ': ' . $value, 0, 1);
-        }
-    } else {
-        // Jeśli 'znakowanie' == 0, pomijanie pól związanych ze znakowaniem
-        if (!in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
-            $pdf->Cell(0, 10, ucfirst(str_replace('_', ' ', $key)) . ': ' . $value, 0, 1);
-        }
+    // Jeśli wybrano "bez znakowania", pomijaj pola związane ze znakowaniem
+    if ($opcja_bez_znakowania == 1 && in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
+        continue;
     }
+
+    // Formatowanie kluczy na bardziej czytelne
+    // Formatowanie kluczy na bardziej czytelne
+    $key_formatted = ucfirst(str_replace('_', ' ', $key));
+
+    // Styl dla nagłówków sekcji
+    $pdf->SetFont('DejaVuSans', 'B', 12);
+    $pdf->SetTextColor(33, 150, 243); // Kolor nagłówka (niebieski)
+    $pdf->Cell(0, 8, $key_formatted, 0, 1);
+
+    // Styl dla wartości
+    $pdf->SetFont('DejaVuSans', '', 12);
+    $pdf->SetTextColor(0); // Kolor tekstu (czarny)
+    $pdf->MultiCell(0, 8, $value); // Automatyczne zawijanie tekstu
+
+    $pdf->Ln(2); // Mały odstęp między wierszami
 }
 
-// Pobranie danych binarnych obrazu z bazy danych
-$imageBlob = $oferta['grafika_produktu']; // Zakładamy, że obraz jest przechowywany jako blob w bazie danych
+
+// Dodanie obrazu, jeśli istnieje
+$imageBlob = $oferta['grafika_produktu']; 
 
 if (!empty($imageBlob)) {
-    // Tworzenie obrazu z danych binarnych
     $imageResource = imagecreatefromstring($imageBlob);
-    
     if ($imageResource !== false) {
-        // Ścieżka do tymczasowego pliku obrazu
-        $tempImagePath = 'temp/temp_image.jpg'; // Zapisywanie w katalogu 'temp'
-
-        // Tworzenie katalogu 'temp', jeśli nie istnieje
+        $tempImagePath = 'temp/temp_image.jpg';
         if (!file_exists('temp')) {
-            mkdir('temp', 0777, true); // Tworzenie katalogu z odpowiednimi uprawnieniami
+            mkdir('temp', 0777, true);
         }
+        imagejpeg($imageResource, $tempImagePath);
+        imagedestroy($imageResource);
 
-        // Zapisywanie obrazu jako JPEG w katalogu tymczasowym
-        imagejpeg($imageResource, $tempImagePath); // Można użyć imagepng() dla PNG
-        imagedestroy($imageResource); // Zwolnienie pamięci
-        
-        // Dodanie obrazu do PDF, jeśli plik został utworzony
         if (file_exists($tempImagePath)) {
             $pdf->Image($tempImagePath, 10, $pdf->GetY(), 50); // Dopasowanie rozmiaru i pozycji obrazu
-            $pdf->Ln(60); // Dodanie odstępu po obrazie
-        } else {
-            error_log("Nie udało się utworzyć pliku tymczasowego obrazu.");
+            $pdf->Ln(60);
         }
-    } else {
-        error_log("Nie udało się utworzyć obrazu z danych binarnych.");
     }
 }
 
@@ -102,6 +134,10 @@ $current_date = date('d-m-Y');
 $filename = 'oferta_' . $numer_oferty . '_' . $current_date . '.pdf';
 
 // Zapis PDF do pliku z dynamiczną nazwą
-$pdf->Output('D', $filename);
+// Clear the output buffer
+ob_end_clean();
 
+// Zapis PDF do pliku z dynamiczną nazwą
+$pdf->Output('D', $filename);
 ?>
+
