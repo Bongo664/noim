@@ -95,9 +95,13 @@ if (!empty($imageBlob)) {
 // Pobranie numeru oferty z bazy danych
 $numer_oferty = $oferta['numer_oferty'];
 
-// Generowanie nazwy pliku PDF
-$filename = 'oferta_' . $numer_oferty . '.pdf';
+// Pobranie aktualnej daty w formacie DD-MM-YYYY
+$current_date = date('d-m-Y');
+
+// Generowanie nazwy pliku PDF z datą
+$filename = 'oferta_' . $numer_oferty . '_' . $current_date . '.pdf';
 
 // Zapis PDF do pliku z dynamiczną nazwą
 $pdf->Output('D', $filename);
+
 ?>
