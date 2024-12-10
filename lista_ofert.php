@@ -59,7 +59,7 @@ $result = $conn->query($query);
 
         h1 {
             text-align: center;
-            color: #4CAF50;
+            color: #007BFF;
         }
 
         form {
@@ -78,7 +78,7 @@ $result = $conn->query($query);
         button {
             padding: 8px 12px;
             border: none;
-            background-color: #4CAF50;
+            background-color: #007BFF;
             color: white;
             border-radius: 5px;
             cursor: pointer;
@@ -87,11 +87,11 @@ $result = $conn->query($query);
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
 
         a {
-            color: #4CAF50;
+            color: #007BFF;
             text-decoration: none;
             font-weight: bold;
         }
@@ -170,7 +170,7 @@ $result = $conn->query($query);
         .btn-back {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #007BFF;
             color: white;
             text-align: center;
             border-radius: 5px;
@@ -179,7 +179,7 @@ $result = $conn->query($query);
         }
 
         .btn-back:hover {
-            background-color: #4CAF20;
+            background-color: #0056b3;
         }
     </style>
 </head>

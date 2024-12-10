@@ -80,7 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -137,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="text"]:focus,
         input[type="date"]:focus,
         input[type="number"]:focus {
-            border-color: #4CAF50;
+            border-color: #007BFF;
             outline: none;
         }
 
@@ -231,7 +230,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         input[type="submit"], 
         .back-link {
-            background-color: #4CAF50;
+            background-color: #007BFF;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -246,7 +245,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         input[type="submit"]:hover, 
         .back-link:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
 
         .back-link-container {
