@@ -19,12 +19,6 @@ class PDF extends FPDF {
     }
 
     // Nagłówek dokumentu
-    function Header() {
-        $this->SetFont('DejaVuSans', 'B', 16);
-        $this->SetTextColor(33, 150, 243);
-        $this->Cell(0, 10, $this->utf8_decode('Oferta'), 0, 1, 'C');
-        $this->Ln(10);
-    }
 
     // Metoda do obsługi tekstu UTF-8
     function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
@@ -70,6 +64,7 @@ $opcja_bez_znakowania = $oferta['opcja_bez_znakowania'] ?? 0;
 $pola_pominiete = ['id', 'cena_przed_marza', 'opcja_z_znakowaniem', 'opcja_bez_znakowania', 'znakowanie','kolory','grafika_produktu'];
 
 // Iteracja przez wszystkie pola oferty
+// Iteracja przez wszystkie pola oferty
 foreach ($oferta as $key => $value) {
     // Pomijanie pól określonych w $pola_pominiete
     if (in_array($key, $pola_pominiete)) {
@@ -77,14 +72,16 @@ foreach ($oferta as $key => $value) {
     }
 
     // Jeśli wybrano "ze znakowaniem", pomijaj pole "kolory bez znakowania"
-    if ($znakowanie == 1 && $key === 'kolory_bez_znakowania') {
+    if ($oferta['opcja_z_znakowaniem'] == 1 && $key === 'kolory_bez_znakowania') {
         continue;
     }
 
     // Jeśli wybrano "bez znakowania", pomijaj pola związane ze znakowaniem
-    if ($opcja_bez_znakowania == 1 && in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
+    if ($oferta['opcja_bez_znakowania'] == 1 && in_array($key, ['technologia_znakowania', 'liczba_kolorow', 'kolory_znakowania'])) {
         continue;
     }
+
+    // Reszta kodu pozostaje bez zmian...
 
     // Formatowanie kluczy na bardziej czytelne
     // Formatowanie kluczy na bardziej czytelne
