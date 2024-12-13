@@ -1,5 +1,4 @@
 <?php
-// Start output buffering
 ob_start();
 include_once('db_connect.php');
 require('fpdf186/fpdf.php');
@@ -40,8 +39,6 @@ class PDF extends FPDF {
     }
 }
 
-// Reszta kodu pozostaje bez zmian...
-
 // Tworzenie obiektu PDF
 $pdf = new PDF();
 
@@ -64,7 +61,6 @@ $opcja_bez_znakowania = $oferta['opcja_bez_znakowania'] ?? 0;
 $pola_pominiete = ['id', 'cena_przed_marza', 'opcja_z_znakowaniem', 'opcja_bez_znakowania', 'znakowanie','kolory','grafika_produktu'];
 
 // Iteracja przez wszystkie pola oferty
-// Iteracja przez wszystkie pola oferty
 foreach ($oferta as $key => $value) {
     // Pomijanie pól określonych w $pola_pominiete
     if (in_array($key, $pola_pominiete)) {
@@ -81,9 +77,6 @@ foreach ($oferta as $key => $value) {
         continue;
     }
 
-    // Reszta kodu pozostaje bez zmian...
-
-    // Formatowanie kluczy na bardziej czytelne
     // Formatowanie kluczy na bardziej czytelne
     $key_formatted = ucfirst(str_replace('_', ' ', $key));
 
@@ -131,7 +124,6 @@ $current_date = date('d-m-Y');
 $filename = 'oferta_' . $numer_oferty . '_' . $current_date . '.pdf';
 
 // Zapis PDF do pliku z dynamiczną nazwą
-// Clear the output buffer
 ob_end_clean();
 
 // Zapis PDF do pliku z dynamiczną nazwą
